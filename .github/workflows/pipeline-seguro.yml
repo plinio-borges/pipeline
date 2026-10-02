@@ -84,7 +84,8 @@ jobs:
 
   # ============================================================
   # ESTACAO 3 - BUILD
-  # Resolve as dependencias e compila. Ajuste para a sua stack.
+  # App Python (app.py). Instala dependencias e valida que o
+  # modulo principal importa sem erro de sintaxe.
   # ============================================================
   build:
     name: "3 - Build"
@@ -93,22 +94,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Exemplo para Node.js - troque pelos comandos da sua stack
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
+      - name: Configurar Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '20'
-          cache: 'npm'
+          python-version: '3.12'
+          cache: 'pip'
 
-      - name: Instalar dependencias (resolve o lockfile)
-        run: npm ci
+      - name: Instalar dependencias (resolve o requirements.txt)
+        run: pip install -r requirements.txt
 
-      - name: Build da aplicacao
-        run: npm run build --if-present
+      - name: Verificar que a aplicacao importa sem erros
+        run: python -c "import app"
 
   # ============================================================
   # ESTACAO 4 - SCA (Trivy - dependencias)
-  # Audita o lockfile resolvido no build. CRITICAL/HIGH bloqueia;
+  # Audita o requirements.txt resolvido no build. CRITICAL/HIGH bloqueia;
   # MEDIUM/LOW so avisa (estrategia de baseline).
   # ============================================================
   sca-trivy:
@@ -206,7 +206,7 @@ jobs:
   # ============================================================
   # ESTACAO 7 - DEPLOY EM HOMOLOGACAO + DAST (OWASP ZAP)
   # As duas ficam no MESMO job porque precisam compartilhar
-  # a rede Docker do mesmo runner.
+  # a rede Docker do mesmo runner. App Python/Flask na porta 5000.
   # ============================================================
   homolog-e-dast:
     name: "7 - Deploy em Homologacao + DAST (OWASP ZAP)"
@@ -218,11 +218,11 @@ jobs:
 
       - name: Subir a aplicacao no ambiente de teste
         run: |
-          docker run -d --name app-homolog -p 8080:8080 \
+          docker run -d --name app-homolog -p 5000:5000 \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           echo "Aguardando a aplicacao responder..."
           for i in $(seq 1 15); do
-            if curl -sf http://localhost:8080/ > /dev/null; then
+            if curl -sf http://localhost:5000/ > /dev/null; then
               echo "Aplicacao no ar."; break
             fi
             sleep 3
@@ -235,7 +235,7 @@ jobs:
             -v $(pwd)/zap-report:/zap/wrk/:rw \
             -v $(pwd)/.zap/rules.tsv:/zap/rules.tsv:ro \
             ghcr.io/zaproxy/zaproxy:stable \
-            zap-baseline.py -t http://localhost:8080 \
+            zap-baseline.py -t http://localhost:5000 \
               -r zap-report.html -J zap-report.json \
               -c /zap/rules.tsv -I
         continue-on-error: true
@@ -308,4 +308,3 @@ jobs:
         run: |
           echo "Aqui entraria a chamada ao seu webhook de notificacao."
           echo 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Pipeline falhou\"}" $SLACK_WEBHOOK_URL'
-
