@@ -42,7 +42,7 @@ metadata:
   namespace: cartoes
 data:
   DB_PASSWORD: "Cart0es@2024"
-  API_KEY_BANDEIRA: "bandeira_live_4f8e2a1b9c7d6e5f"
+  #API_KEY_BANDEIRA: "bandeira_live_4f8e2a1b9c7d6e5f"
 ---
 apiVersion: apps/v1
 kind: Deployment
