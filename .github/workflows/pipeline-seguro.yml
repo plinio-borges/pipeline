@@ -60,8 +60,7 @@ jobs:
             --config=p/owasp-top-ten \
             --config=p/security-audit \
             --config=p/secrets \
-            --sarif --output=semgrep-results.sarif \
-            --json  --output=semgrep-results.json
+            --sarif --output=semgrep-results.sarif
 
       - name: Avaliar a politica de portao (bloqueia so em ERROR)
         run: |
