@@ -41,8 +41,8 @@ metadata:
   name: simulador-cartoes-config
   namespace: cartoes
 data:
-  DB_PASSWORD: "Cart0es@2024"
-  API_KEY_BANDEIRA: "bandeira_live_4f8e2a1b9c7d6e5f"
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  API_KEY_BANDEIRA: ${{ secrets.BANDEIRA_KEY_API }}
 ---
 apiVersion: apps/v1
 kind: Deployment
