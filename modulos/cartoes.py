@@ -3,7 +3,6 @@ Módulo de consulta de cartões do Simulador de Cartões de Crédito.
 Contém vulnerabilidades intencionais de SQL Injection: os parâmetros
 recebidos da requisição são concatenados diretamente na query SQL,
 sem uso de consultas parametrizadas (Prepared Statements).
-"""
 
 import sqlite3
 
