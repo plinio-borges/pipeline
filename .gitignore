@@ -1,1 +1,3 @@
 leaks.json
+semgrep-results.json
+.gitignore

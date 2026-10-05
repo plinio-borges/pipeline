@@ -15,8 +15,8 @@ def gerar_relatorio_pdf(formato):
     """Gera um relatório em PDF chamando um script externo. VULNERÁVEL:
     shell=True combinado com concatenação de string permite injeção de
     comandos (ex.: formato='pdf; cat /etc/passwd')."""
-    comando = "gerar_pdf.sh " + formato
-    resultado = subprocess.run(comando, shell=True, capture_output=True)
+    comando = [ "gerar_pdf.sh ", formato ]
+    resultado = subprocess.run(comando, capture_outpout=True, text=True, check=True)
     return resultado.stdout
 
 
