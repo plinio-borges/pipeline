@@ -29,8 +29,11 @@ RUN apt-get update && \
 # [NOTA DIDÁTICA] Correção definitiva das dependências internas de runtime do Python.
 # Forçamos o setuptools a subir para uma versão >= 78.1.1 para atualizar o jaraco.context interno,
 # e atualizamos o wheel diretamente para mitigar a falha de permissões.
+#RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir setuptools==78.1.1 wheel==0.46.2
+
+# [NOTA DIDÁTICA] Correção definitiva das dependências internas de runtime do Python.
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir setuptools==78.1.1 wheel==0.46.2
+    pip install --no-cache-dir --upgrade --force-reinstall setuptools==78.1.1 wheel==0.46.2
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -43,4 +46,6 @@ USER appuser
 
 EXPOSE 5000
 
+# Alterado em <layout>followupButton(query="""Add today's date to my calendar""", label="""06/10/2026""", variant=FOLLOWUP_BUTTON_VARIANT_DATE_DROPDOWN)</layout> para quebrar o cache de build do GitHub.
+CMD ["python", "app.py"]
 CMD ["python", "app.py"]
