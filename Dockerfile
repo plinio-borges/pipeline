@@ -41,8 +41,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 2. [CORREÇÃO DE SEGURANÇA CONTRA DOWNGRADE] 
 # Executamos a atualização do Pip, Setuptools e Wheel por ÚLTIMO.
 # Isso garante que as versões seguras sobrescrevam qualquer versão antiga trazida pelo requirements.txt.
+#RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir --upgrade setuptools>=78.1.1 wheel>=0.46.2
+
+# [NOTA DIDÁTICA] Correção de Segurança Definitiva contra Downgrade/Bloqueio do requirements.
+# Adicionamos as flags --upgrade e --force-reinstall para obrigar o Pip a sobrescrever 
+# as versões vulneráveis trazidas pelas dependências da aplicação.
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir --upgrade setuptools>=78.1.1 wheel>=0.46.2
+    pip install --no-cache-dir --upgrade --force-reinstall \
+    setuptools>=78.1.1 \
+    urllib3>=2.8.0 \
+    msgpack>=1.2.1
 
 #COPY requirements.txt .
 #RUN pip install --no-cache-dir -r requirements.txt
