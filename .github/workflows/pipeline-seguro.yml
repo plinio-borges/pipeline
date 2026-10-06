@@ -126,6 +126,7 @@ jobs:
           exit-code: '1'
           format: 'sarif'
           output: 'trivy-fs-results.sarif'
+          limit-severities-for-sarif: true
 
       - name: Trivy - relatorio informativo (nao bloqueia)
         if: always()
