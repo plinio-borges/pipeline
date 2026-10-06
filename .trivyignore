@@ -1,0 +1,8 @@
+# Exceções aceitas no Laboratório de Hardening de Kubernetes.
+GHSA-6v7p-g79w-8964
+CVE-2025-47273
+CVE-2026-97687
+CVE-2026-97689
+
+# [NOTA DIDÁTICA] Ignora o histórico do Dockerfile antigo para não poluir o scan estático
+Dockerfile.old
