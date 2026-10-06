@@ -194,6 +194,7 @@ jobs:
           exit-code: '1'
           format: 'sarif'
           output: 'trivy-image-results.sarif'
+          limit-severities-for-sarif: true
 
       - name: Publicar relatorio da imagem
         if: always()
