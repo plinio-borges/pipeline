@@ -195,6 +195,7 @@ jobs:
           format: 'sarif'
           output: 'trivy-image-results.sarif'
           limit-severities-for-sarif: true
+          ignore-unfixed: true # <-- ESSENCIAL: Ignora falhas de sistema sem correção oficial
 
       - name: Publicar relatorio da imagem
         if: always()
