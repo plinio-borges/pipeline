@@ -30,7 +30,7 @@ RUN apt-get update && \
 # Forçamos o setuptools a subir para uma versão >= 78.1.1 para atualizar o jaraco.context interno,
 # e atualizamos o wheel diretamente para mitigar a falha de permissões.
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir setuptools>=78.1.1 wheel>=0.46.2
+    pip install --no-cache-dir setuptools==78.1.1 wheel==0.46.2
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
