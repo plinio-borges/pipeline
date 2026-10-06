@@ -20,7 +20,16 @@ RUN apt-get update && \
 
 # [NOTA DIDÁTICA] Atualização das ferramentas base do ecossistema Python
 # Necessário para corrigir falhas de nível HIGH ocultas em sub-dependências do setuptools (wheel e jaraco.context)
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+#RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
+# [NOTA DIDÁTICA] Correção Cirúrgica das dependências base do Python.
+# Forçamos o Pip a instalar estritamente as versões seguras indicadas no relatório SARIF anterior.
+RUN pip install --no-cache-dir \
+    pip==24.0 \
+    setuptools==78.1.1 \
+    wheel==0.46.2 \
+    urllib3==2.8.0 \
+    msgpack==1.2.1
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
