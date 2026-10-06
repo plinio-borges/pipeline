@@ -250,12 +250,23 @@ jobs:
 
       - name: Avaliar a politica de portao do DAST (bloqueia em risco ALTO)
         run: |
-          ALTOS=$(jq '[.site[]?.alerts[]? | select(.riskcode=="3")] | length' zap-report/zap-report.json)
-          echo "Achados de risco ALTO: $ALTOS"
-          echo "## Resultado do DAST (OWASP ZAP)" >> $GITHUB_STEP_SUMMARY
-          echo "- Achados de risco ALTO: $ALTOS" >> $GITHUB_STEP_SUMMARY
-          if [ "$ALTOS" -gt 0 ]; then
-            echo "Build bloqueado: o DAST encontrou vulnerabilidade de risco ALTO."
+          # 1. Verifica se o relatório do ZAP realmente existe antes de tentar ler com o JQ
+          if [ -f zap-report/zap-report.json ]; then
+            ALTOS=$(jq '[.site[]?.alerts[]? | select(.riskcode=="3")] | length' zap-report/zap-report.json)
+            echo "Achados de risco ALTO: $ALTOS"
+            echo "## Resultado do DAST (OWASP ZAP)" >> $GITHUB_STEP_SUMMARY
+            echo "- Achados de risco ALTO: $ALTOS" >> $GITHUB_STEP_SUMMARY
+            
+            # 2. Mantém o portão de segurança: se houver vulnerabilidade ALTA, falha o build
+            if [ "$ALTOS" -gt 0 ]; then
+              echo "Build bloqueado: o DAST encontrou vulnerabilidade de risco ALTO."
+              exit 1
+            fi
+          else
+            # 3. Caso o ZAP tenha quebrado antes de gerar o arquivo, exibe um erro amigável didático
+            echo "## Resultado do DAST (OWASP ZAP)" >> $GITHUB_STEP_SUMMARY
+            echo "- ❌ Erro: O arquivo de relatorio JSON nao foi gerado pelo OWASP ZAP." >> $GITHUB_STEP_SUMMARY
+            echo "Erro Crítico: O relatório json não foi encontrado na pasta zap-report/."
             exit 1
           fi
 
