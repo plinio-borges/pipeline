@@ -1,8 +1,10 @@
-# Dockerfile do Simulador de Cartões de Crédito
-# Usado no Laboratório de Segurança em Kubernetes (Minikube).
 FROM python:3.11-slim
 
 WORKDIR /app
+
+# [NOTA DIDÁTICA] Copia a lista de exceções aceitas pelo time de segurança
+# Isso garante que scanners de runtime ou de registro (como o Trivy na Estação 6) reconheçam os riscos aceitos.
+COPY .trivyignore .
 
 # [NOTA DIDÁTICA] Atualização dos pacotes nativos da distribuição (Debian)
 RUN apt-get update && \
