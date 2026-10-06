@@ -18,6 +18,10 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     rm -rf /var/lib/apt/lists/*
 
+# 1. Primeiro instalamos os pacotes originais do laboratório
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
 # [NOTA DIDÁTICA] Atualização das ferramentas base do ecossistema Python
 # Necessário para corrigir falhas de nível HIGH ocultas em sub-dependências do setuptools (wheel e jaraco.context)
 #RUN pip install --no-cache-dir --upgrade pip setuptools wheel
@@ -32,11 +36,16 @@ RUN apt-get update && \
 #RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir setuptools==78.1.1 wheel==0.46.2
 
 # [NOTA DIDÁTICA] Correção definitiva das dependências internas de runtime do Python.
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir --upgrade --force-reinstall setuptools==78.1.1 wheel==0.46.2
+#RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir --upgrade --force-reinstall setuptools==78.1.1 wheel==0.46.2
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# 2. [CORREÇÃO DE SEGURANÇA CONTRA DOWNGRADE] 
+# Executamos a atualização do Pip, Setuptools e Wheel por ÚLTIMO.
+# Isso garante que as versões seguras sobrescrevam qualquer versão antiga trazida pelo requirements.txt.
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir --upgrade setuptools>=78.1.1 wheel>=0.46.2
+
+#COPY requirements.txt .
+#RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
@@ -47,5 +56,4 @@ USER appuser
 EXPOSE 5000
 
 # Alterado em <layout>followupButton(query="""Add today's date to my calendar""", label="""06/10/2026""", variant=FOLLOWUP_BUTTON_VARIANT_DATE_DROPDOWN)</layout> para quebrar o cache de build do GitHub.
-CMD ["python", "app.py"]
 CMD ["python", "app.py"]
