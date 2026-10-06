@@ -12,6 +12,16 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# [NOTA DIDÁTICA] Atualização dos pacotes nativos da distribuição (Debian)
+# Adicionado para mitigar falhas de nível HIGH/CRITICAL identificadas pelo Trivy no SO (util-linux, ncurses, etc.)
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
+
+# [NOTA DIDÁTICA] Atualização das ferramentas base do ecossistema Python
+# Necessário para corrigir falhas de nível HIGH ocultas em sub-dependências do setuptools (wheel e jaraco.context)
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
