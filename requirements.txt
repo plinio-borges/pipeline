@@ -1,6 +1,6 @@
 Flask==3.0.0
 requests==2.31.0
-jaraco>=6.1.0
+jaraco.context>=6.1.0
 msgpack==1.2.1
 setuptools==83.0.0
 urllib3==2.8.0
